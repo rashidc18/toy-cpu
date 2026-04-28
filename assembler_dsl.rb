@@ -3,6 +3,7 @@
 HALT = 0
 PUSH = 1
 OUT = 2
+ADD = 3
 
 class Assembler
   def initialize(file)
@@ -30,6 +31,10 @@ class Assembler
     write_instr HALT
   end
 
+  def add
+    write_instr ADD
+  end
+
   def write_file
     halt
     File.open(@file, "wb") do |f|
@@ -42,7 +47,7 @@ asm = Assembler.new "test.bin"
 
 asm.push 123
 asm.push 1234
-asm.out
+asm.add
 asm.out
 
 asm.write_file

@@ -23,14 +23,21 @@ void ram_write(RAM* ram, int position, uint8_t byte) {
   ram->data[position] = byte;
 }
 
-void stack_write(CPU* cpu, RAM *ram, uint8_t byte) {
+void stack_write(CPU* cpu, RAM* ram, uint8_t byte) {
   if (cpu->sp < STACK_END)
     error(STACK_OVERFLOW_ERROR);
 
   ram->data[cpu->sp--] = byte;
 }
 
-uint8_t stack_pop_byte(CPU* cpu, RAM *ram) {
+void stack_write_int(CPU* cpu, RAM* ram, int value) {
+  stack_write(cpu, ram, (value >> 0) & 0xFF);
+  stack_write(cpu, ram, (value >> 8) & 0xFF);
+  stack_write(cpu, ram, (value >> 16) & 0xFF);
+  stack_write(cpu, ram, (value >> 24) & 0xFF);
+}
+
+uint8_t stack_pop_byte(CPU* cpu, RAM* ram) {
   if (cpu->sp >= STACK_START)
     error(STACK_UNDERFLOW_ERROR);
 
@@ -71,6 +78,12 @@ void run(CPU* cpu, RAM* ram) {
       
       case OP_OUT:
         printf("%d\n", stack_pop_int(cpu, ram));
+        break;
+
+      case OP_ADD:
+        int b = stack_pop_int(cpu, ram);
+        int a = stack_pop_int(cpu, ram);
+        stack_write_int(cpu, ram, a + b);
         break;
 
       default:
