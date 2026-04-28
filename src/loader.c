@@ -2,13 +2,15 @@
 #include <stdint.h>
 
 #include "loader.h"
+#include "cpu.h"
+#include "ram.h"
 #include "error.h"
 
 void load_ram_from_file(RAM* ram, char* file) {
   FILE* fp = fopen(file, "rb");
 
   if (!fp) {
-    error("file `%s` not found", file);
+    error(FILE_NOT_FOUND_ERROR, file);
   }
 
   int position = 0;
@@ -17,7 +19,7 @@ void load_ram_from_file(RAM* ram, char* file) {
   while ((byte = fgetc(fp)) != EOF) {
     if (position == RAM_SIZE) {
       fclose(fp);
-      error("memory overflow");
+      error(MEMORY_OVERFLOW_ERROR);
     }
 
     ram->data[position++] = (uint8_t)byte;
