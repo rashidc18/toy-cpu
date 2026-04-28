@@ -15,4 +15,4 @@ $(TARGET): $(OBJ)
 	$(CC) $(CFLAGS) -c $< -o $@
 
 clean:
-	rm -f *.o minicpu
+	rm -f src/*.o minicpu
