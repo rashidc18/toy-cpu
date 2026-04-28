@@ -3,6 +3,9 @@
 
 typedef struct {
   int pc;
+  uint8_t on;
 } CPU;
+
+CPU* new_cpu();
 
 #endif
