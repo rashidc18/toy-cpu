@@ -11,6 +11,10 @@ const char* opcodes_as_string[] = {
   [PSI] = "PSI",
   [PSF] = "PSF",
   [DUP] = "DUP",
+  [ISP] = "ISP",
+  [FSP] = "FSP",
+  [IFS] = "IFS",
+  [FIS] = "FIS",
   [POP] = "POP",
   [IAD] = "IAD",
   [ISB] = "ISB",
@@ -88,6 +92,22 @@ void dup(CPU* cpu, RAM* ram) {
   stack_write_byte(cpu, ram, byte2);
   stack_write_byte(cpu, ram, byte3);
   stack_write_byte(cpu, ram, byte4);
+}
+
+void isp(CPU *cpu, RAM* ram) {
+  int a, b;
+  get_two_int_from_stack(cpu, ram, &a, &b);
+  stack_write_int(cpu, ram, b);
+  stack_write_int(cpu, ram, a);
+}
+
+void fsp(CPU *cpu, RAM* ram) {
+}
+
+void ifs(CPU *cpu, RAM* ram) {
+}
+
+void fis(CPU *cpu, RAM* ram) {
 }
 
 void pop(CPU* cpu, RAM* ram) {

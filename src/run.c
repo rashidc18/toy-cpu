@@ -27,6 +27,10 @@ void run_instr(CPU* cpu, RAM* ram) {
     case PSI:     psi(cpu, ram);      break;
     case PSF:     psf(cpu, ram);      break;
     case DUP:     dup(cpu, ram);      break;
+    case ISP:     isp(cpu, ram);      break;
+    case FSP:     fsp(cpu, ram);      break;
+    case IFS:     ifs(cpu, ram);      break;
+    case FIS:     fis(cpu, ram);      break;
     case POP:     pop(cpu, ram);      break;
     case IAD:     iad(cpu, ram);      break;
     case ISB:     isb(cpu, ram);      break;

@@ -9,49 +9,53 @@
 #define PSI       2  /*  PSI <int>          ; push int                     */
 #define PSF       3  /*  PSF <float>        ; push float                   */
 #define DUP       4  /*  DUP                ; duplicate                    */
-#define POP       5  /*  POP                ; pop                          */
-#define IAD       6  /*  IAD                ; int add                      */
-#define ISB       7  /*  ISB                ; int sub                      */
-#define IML       8  /*  IML                ; int mul                      */
-#define IDV       9  /*  IDV                ; int div                      */
-#define IMD      10  /*  ISB                ; int mod                      */
-#define ING      11  /*  ING                ; int negate                   */
-#define FAD      12  /*  FAD                ; float add                    */
-#define FSB      13  /*  FSB                ; float sub                    */
-#define FML      14  /*  FML                ; float mul                    */
-#define FDV      15  /*  FDV                ; float div                    */
-#define FMD      16  /*  FSB                ; float mod                    */
-#define FNG      17  /*  FNG                ; float negate                 */
-#define IEQ      18  /*  IEQ                ; int equal                    */
-#define INE      19  /*  INE                ; int not equal                */
-#define ILT      20  /*  ILT                ; int less than                */
-#define ILE      21  /*  ILE                ; int less or equal than       */
-#define IGT      22  /*  IGT                ; int greater than             */
-#define IGE      23  /*  IGE                ; int greater or equal than    */
-#define INT      24  /*  INT                ; int not                      */
-#define IAN      25  /*  IAN                ; int and                      */
-#define IOR      26  /*  IOR                ; int or                       */
-#define FEQ      27  /*  FEQ                ; float equal                  */
-#define FNE      28  /*  FNE                ; float not equal              */
-#define FLT      29  /*  FLT                ; float less than              */
-#define FLE      30  /*  FLE                ; float less or equal than     */
-#define FGT      31  /*  FGT                ; float greater than           */
-#define FGE      32  /*  FGE                ; float greater or equal than  */
-#define FNT      33  /*  FNT                ; float not                    */
-#define FAN      34  /*  FAN                ; float and                    */
-#define FOR      35  /*  FOR                ; float or                     */
-#define ILD      36  /*  ILD <address>      ; int load                     */
-#define IST      37  /*  IST <address>      ; int store                    */
-#define FLD      38  /*  FLD <address>      ; float load                   */
-#define FST      39  /*  FST <address>      ; float store                  */
-#define ITF      40  /*  ITF                ; int to float                 */
-#define FTI      41  /*  FTI                ; float to int                 */
-#define JMP      42  /*  JMP <address>      ; jump                         */
-#define JPZ      43  /*  JPZ <address>      ; jump if zero                 */
-#define JNZ      44  /*  JNZ <address>      ; jump if not zero             */
-#define CAL      45  /*  CAL <address>      ; call                         */
-#define RET      46  /*  RET                ; return                       */
-#define SYSCALL  47  /*  SYSCALL <syscode>  ; system call                  */
+#define ISP       5  /*  ISP                ; int swap                     */
+#define FSP       6  /*  FSP                ; float swap                   */
+#define IFS       7  /*  IFS                ; int float swap               */
+#define FIS       8  /*  FIS                ; float int swap               */
+#define POP       9  /*  POP                ; pop                          */
+#define IAD      10  /*  IAD                ; int add                      */
+#define ISB      11  /*  ISB                ; int sub                      */
+#define IML      12  /*  IML                ; int mul                      */
+#define IDV      13  /*  IDV                ; int div                      */
+#define IMD      14  /*  ISB                ; int mod                      */
+#define ING      15  /*  ING                ; int negate                   */
+#define FAD      16  /*  FAD                ; float add                    */
+#define FSB      17  /*  FSB                ; float sub                    */
+#define FML      18  /*  FML                ; float mul                    */
+#define FDV      19  /*  FDV                ; float div                    */
+#define FMD      20  /*  FSB                ; float mod                    */
+#define FNG      21  /*  FNG                ; float negate                 */
+#define IEQ      22  /*  IEQ                ; int equal                    */
+#define INE      23  /*  INE                ; int not equal                */
+#define ILT      24  /*  ILT                ; int less than                */
+#define ILE      25  /*  ILE                ; int less or equal than       */
+#define IGT      26  /*  IGT                ; int greater than             */
+#define IGE      27  /*  IGE                ; int greater or equal than    */
+#define INT      28  /*  INT                ; int not                      */
+#define IAN      29  /*  IAN                ; int and                      */
+#define IOR      30  /*  IOR                ; int or                       */
+#define FEQ      31  /*  FEQ                ; float equal                  */
+#define FNE      32  /*  FNE                ; float not equal              */
+#define FLT      33  /*  FLT                ; float less than              */
+#define FLE      34  /*  FLE                ; float less or equal than     */
+#define FGT      35  /*  FGT                ; float greater than           */
+#define FGE      36  /*  FGE                ; float greater or equal than  */
+#define FNT      37  /*  FNT                ; float not                    */
+#define FAN      38  /*  FAN                ; float and                    */
+#define FOR      39  /*  FOR                ; float or                     */
+#define ILD      40  /*  ILD <address>      ; int load                     */
+#define IST      41  /*  IST <address>      ; int store                    */
+#define FLD      42  /*  FLD <address>      ; float load                   */
+#define FST      43  /*  FST <address>      ; float store                  */
+#define ITF      44  /*  ITF                ; int to float                 */
+#define FTI      45  /*  FTI                ; float to int                 */
+#define JMP      46  /*  JMP <address>      ; jump                         */
+#define JPZ      47  /*  JPZ <address>      ; jump if zero                 */
+#define JNZ      48  /*  JNZ <address>      ; jump if not zero             */
+#define CAL      49  /*  CAL <address>      ; call                         */
+#define RET      50  /*  RET                ; return                       */
+#define SYSCALL  51  /*  SYSCALL <syscode>  ; system call                  */
 
 extern const char* opcodes_as_string[];
 
@@ -60,6 +64,10 @@ void nop();
 void psi(CPU* cpu, RAM* ram);
 void psf(CPU* cpu, RAM* ram);
 void dup(CPU* cpu, RAM* ram);
+void isp(CPU *cpu, RAM* ram);
+void fsp(CPU *cpu, RAM* ram);
+void ifs(CPU *cpu, RAM* ram);
+void fis(CPU *cpu, RAM* ram);
 void pop(CPU* cpu, RAM* ram);
 void iad(CPU* cpu, RAM* ram);
 void isb(CPU* cpu, RAM* ram);
