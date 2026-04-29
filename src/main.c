@@ -4,7 +4,6 @@
 
 #include "cpu.h"
 #include "ram.h"
-#include "error.h"
 #include "loader.h"
 #include "run.h"
 
