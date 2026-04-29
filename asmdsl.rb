@@ -15,6 +15,7 @@ module ASMDSL
 
   SYSCALL_EXIT = 0
   SYSCALL_OUT_INT = 1
+  SYSCALL_SLEEP = 2
 
   class Assembler
     def initialize(file)

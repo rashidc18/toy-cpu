@@ -6,10 +6,12 @@
 
 #define SYSCALL_EXIT 0
 #define SYSCALL_OUT_INT 1
+#define SYSCALL_SLEEP 2
 
 void syscall(CPU* cpu, RAM* ram);
 
 void syscall_exit(CPU* cpu, RAM* ram);
-void syscall_out_int(CPU* cpu, RAM* ram) ;
+void syscall_out_int(CPU* cpu, RAM* ram);
+void syscall_sleep(CPU* cpu, RAM* ram);
 
 #endif
