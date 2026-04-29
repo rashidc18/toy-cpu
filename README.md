@@ -10,7 +10,7 @@ A simple virtual CPU written in C.
 To build the project, make sure you have a C compiler installed (such as gcc or clang).
 ```bash
 $ git clone https://github.com/rashidc18/mini-cpu.git
-$ cd min-cpu
+$ cd mini-cpu
 $ make
 ```
 
