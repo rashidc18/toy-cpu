@@ -43,7 +43,7 @@ void run_instr(CPU* cpu, RAM* ram) {
     break;
 
     case OP_DIV:
-      div(cpu, ram);
+      op_div(cpu, ram);
     break;
 
     case OP_SYSCALL:
@@ -85,7 +85,7 @@ void mul(CPU* cpu, RAM* ram) {
   stack_write_int(cpu, ram, a * b);
 }
 
-void div(CPU* cpu, RAM* ram) {
+void op_div(CPU* cpu, RAM* ram) {
   int a, b;
   get_two_int_from_stack(cpu, ram, &a, &b);
   stack_write_int(cpu, ram, a / b);

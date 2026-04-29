@@ -18,7 +18,7 @@ void push(CPU* cpu, RAM* ram);
 void add(CPU* cpu, RAM* ram);
 void sub(CPU* cpu, RAM* ram);
 void mul(CPU* cpu, RAM* ram);
-void div(CPU* cpu, RAM* ram);
+void op_div(CPU* cpu, RAM* ram);
 
 void get_two_int_from_stack(CPU* cpu, RAM* ram, int* a, int* b);
 
