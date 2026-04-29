@@ -2,12 +2,23 @@
 
 module ASMDSL
   HALT = 0
-  PUSH = 1
-  ADD = 2
-  SYSCALL = 3
+  SYSCALL = 1
+  PUSH = 2
+  ADD = 3
+  SUB = 4
+  MUL = 5
+  DIV = 6
 
   SYSCALL_EXIT = 0
   SYSCALL_OUT_INT = 1
+
+  #define OP_HALT 0
+  #define OP_SYSCALL 1
+  #define OP_PUSH 2
+  #define OP_ADD 3
+  #define OP_SUB 4
+  #define OP_MUL 5
+  #define OP_DIV 6
 
   class Assembler
     def initialize(file)
@@ -33,6 +44,18 @@ module ASMDSL
 
     def add
       write_instr ADD
+    end
+
+    def sub
+      write_instr SUB
+    end
+
+    def mul
+      write_instr MUL
+    end
+
+    def div
+      write_instr DIV
     end
 
     def syscall(syscode)
