@@ -21,7 +21,7 @@ end
 class Assembler
   def initialize
     @program = []
-    @labels = []
+    @labels = {}
   end
 
   def save_program(file)
