@@ -15,17 +15,10 @@ void syscall(CPU* cpu, RAM* ram) {
   uint8_t syscode = fetch_instr(cpu, ram);
 
   switch (syscode) {
-    case SYSCALL_EXIT:
-      syscall_exit(cpu, ram);
-    break;
-
-    case SYSCALL_OUT_INT:
-      syscall_out_int(cpu, ram);
-    break;
-
-    case SYSCALL_SLEEP:
-      syscall_sleep(cpu, ram);
-    break;
+    case SYSCALL_EXIT: syscall_exit(cpu, ram); break;
+    case SYSCALL_OUT_INT: syscall_out_int(cpu, ram); break;
+    case SYSCALL_OUT_CHAR: syscall_out_char(cpu, ram); break;
+    case SYSCALL_SLEEP: syscall_sleep(cpu, ram); break;
 
     default:
       error(UNKNOWN_SYSCALL_CODE_ERROR, syscode);
@@ -38,7 +31,11 @@ void syscall_exit(CPU* cpu, RAM* ram) {
 }
 
 void syscall_out_int(CPU* cpu, RAM* ram) {
-  printf("%d\n", stack_pop_int(cpu, ram));
+  printf("%d", stack_pop_int(cpu, ram));
+}
+
+void syscall_out_char(CPU* cpu, RAM* ram) {
+  printf("%c", stack_pop_int(cpu, ram));
 }
 
 void syscall_sleep(CPU* cpu, RAM* ram) {

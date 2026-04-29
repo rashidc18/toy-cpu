@@ -18,7 +18,8 @@ end
 class SysCall
   EXIT = 0
   OUT_INT = 1
-  SLEEP = 2
+  OUT_CHAR = 2
+  SLEEP = 3
 end
 
 class Assembler
@@ -102,3 +103,7 @@ class Assembler
   end
 
 end 
+
+def char(c)
+  c.ord
+end
