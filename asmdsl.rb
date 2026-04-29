@@ -1,6 +1,4 @@
-#!/usr/bin/env ruby
-
-module ASMDSL
+class OpCodes
   HALT = 0
   SYSCALL = 1
   PUSH = 2
@@ -12,91 +10,72 @@ module ASMDSL
   CALL = 8
   DUP = 9
   NOP = 10
+end
 
-  SYSCALL_EXIT = 0
-  SYSCALL_OUT_INT = 1
-  SYSCALL_SLEEP = 2
+class SysCall
+  EXIT = 0
+  OUT_INT = 1
+  SLEEP = 2
+end
 
-  class Assembler
-    def initialize(file)
-      @file = file
-      @bytecode = []
-      @labels = {}
-    end
+class Assembler
+  def initialize
+    @program = []
+    @labels = []
+  end
 
-    def write_instr(instr)
-      @bytecode.push(instr)
-    end
-
-    def write_int(n)
-      write_instr((n >> 0) & 0xFF)
-      write_instr((n >> 8) & 0xFF)
-      write_instr((n >> 16) & 0xFF)
-      write_instr((n >> 24) & 0xFF)
-
-    end
-
-    def label(name)
-      @labels[name] = @bytecode.size
-    end
-
-    def push(n)
-      write_instr(PUSH)
-      write_int(n)
-    end
-
-    def halt
-      write_instr HALT
-    end
-
-    def add
-      write_instr ADD
-    end
-
-    def sub
-      write_instr SUB
-    end
-
-    def mul
-      write_instr MUL
-    end
-
-    def div
-      write_instr DIV
-    end
-
-    def jump(n)
-      write_instr JUMP
-      write_int n
-    end
-    
-    def call(n)
-      write_instr CALL
-      write_int n
-    end
-
-    def jump_label(name)
-      jump(@labels[name])
-    end
-
-    def dup
-      write_instr DUP
-    end
-
-    def syscall(syscode)
-      write_instr SYSCALL
-      write_instr syscode
-    end
-
-    def nop
-      write_instr NOP
-    end
-
-    def write_file
-      halt
-      File.open(@file, "wb") do |f|
-        f.write(@bytecode.pack("C*"))
-      end
+  def save_program(file)
+    File.open(file, "wb") do |f|
+      f.write(@program.pack("C*"))
     end
   end
-end
+
+  def new_label(label)
+    @labels[label] = @program.size
+  end
+
+  def add_instruction(instr)
+    @program.push(instr)
+  end
+
+  def add_int(value)
+    add_instruction((value >> 0) & 0xFF)
+    add_instruction((value >> 8) & 0xFF)
+    add_instruction((value >> 16) & 0xFF)
+    add_instruction((value >> 24) & 0xFF)
+  end
+
+  def syscall(syscode)
+    add_instruction(OpCodes::SYSCALL)
+    add_instruction(syscode)
+  end
+
+  def push(value)
+    add_instruction(OpCodes::PUSH)
+    add_int(value)
+  end
+
+  def jump(address)
+    add_instruction(OpCodes::JUMP)
+    add_int(address)
+  end
+
+  def jump_label(label)
+    jump(@labels[label])
+  end
+
+  {
+    halt: OpCodes::HALT,
+    add: OpCodes::ADD,
+    sub: OpCodes::SUB,
+    mul: OpCodes::MUL,
+    div: OpCodes::DIV,
+    dup: OpCodes::DUP,
+    nop: OpCodes::NOP
+  }.each do |name, opcode|
+    define_method(name) do
+      add_instruction(opcode)
+    end
+  end
+
+end 
