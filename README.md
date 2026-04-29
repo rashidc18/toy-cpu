@@ -1,4 +1,4 @@
-# MINI CPU
+# TOY CPU
 
 A simple virtual CPU written in C.
 
@@ -9,15 +9,15 @@ A simple virtual CPU written in C.
 ## Build
 To build the project, make sure you have a C compiler installed (such as gcc or clang).
 ```bash
-$ git clone https://github.com/rashidc18/mini-cpu.git
-$ cd mini-cpu
+$ git clone https://github.com/rashidc18/toy-cpu.git
+$ cd toy-cpu
 $ make
 ```
 
 ## Run
 To run, use:
 ```bash
-$ ./minilisp file.bin
+$ ./toycpu file.bin
 ```
 
 ## Assembler

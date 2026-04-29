@@ -4,7 +4,7 @@ CFLAGS = -Wall
 SRC = $(wildcard src/*.c)
 OBJ = $(SRC:.c=.o)
 
-TARGET = minicpu
+TARGET = toycpu
 
 CINCLUDE = ./src/include
 
@@ -17,4 +17,4 @@ $(TARGET): $(OBJ)
 	$(CC) -I$(CINCLUDE) $(CFLAGS) -c $< -o $@
 
 clean:
-	rm -f src/*.o minicpu
+	rm -f src/*.o

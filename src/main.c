@@ -9,7 +9,7 @@
 #include "run.h"
 
 void usage() {
-  printf("usage: ./minicpu <file> [options]\n");
+  printf("usage: ./toycpu <file> [options]\n");
 }
 
 int main(int argc, char* argv[]) {
@@ -33,7 +33,7 @@ int main(int argc, char* argv[]) {
     (load_end_time.tv_sec - load_start_time.tv_sec) + 
     (load_end_time.tv_nsec - load_start_time.tv_nsec) / 1e9;
 
-  printf("\033[4m[%f] File %s loaded into memory successfully.\033[0m\n", load_time, file);
+  printf("[%f] File %s loaded into memory successfully.\n", load_time, file);
 
   cpu->on = 1;
 
