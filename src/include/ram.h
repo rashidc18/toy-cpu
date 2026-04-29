@@ -3,7 +3,7 @@
 
 #include <stdint.h>
 
-#define RAM_SIZE 256
+#define RAM_SIZE 4096
 
 typedef struct {
   uint8_t data[RAM_SIZE];

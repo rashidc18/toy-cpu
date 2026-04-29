@@ -6,7 +6,7 @@
 #include "cpu.h"
 #include "ram.h"
 
-#define DEBUG 0
+#define DEBUG 1
 
 void run(CPU* cpu, RAM* ram);
 void run_instr(CPU* cpu, RAM* ram);
@@ -19,6 +19,11 @@ void add(CPU* cpu, RAM* ram);
 void sub(CPU* cpu, RAM* ram);
 void mul(CPU* cpu, RAM* ram);
 void op_div(CPU* cpu, RAM* ram);
+
+void jump(CPU* cpu, RAM* ram);
+void call(CPU* cpu, RAM* ram);
+
+void dup(CPU* cpu, RAM* ram);
 
 void get_two_int_from_stack(CPU* cpu, RAM* ram, int* a, int* b);
 

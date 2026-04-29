@@ -8,34 +8,40 @@ module ASMDSL
   SUB = 4
   MUL = 5
   DIV = 6
+  JUMP = 7
+  CALL = 8
+  DUP = 9
+  NOP = 10
 
   SYSCALL_EXIT = 0
   SYSCALL_OUT_INT = 1
-
-  #define OP_HALT 0
-  #define OP_SYSCALL 1
-  #define OP_PUSH 2
-  #define OP_ADD 3
-  #define OP_SUB 4
-  #define OP_MUL 5
-  #define OP_DIV 6
 
   class Assembler
     def initialize(file)
       @file = file
       @bytecode = []
+      @labels = {}
     end
 
     def write_instr(instr)
       @bytecode.push(instr)
     end
 
-    def push(n)
-      write_instr(PUSH)
+    def write_int(n)
       write_instr((n >> 0) & 0xFF)
       write_instr((n >> 8) & 0xFF)
       write_instr((n >> 16) & 0xFF)
       write_instr((n >> 24) & 0xFF)
+
+    end
+
+    def label(name)
+      @labels[name] = @bytecode.size
+    end
+
+    def push(n)
+      write_instr(PUSH)
+      write_int(n)
     end
 
     def halt
@@ -58,9 +64,31 @@ module ASMDSL
       write_instr DIV
     end
 
+    def jump(n)
+      write_instr JUMP
+      write_int n
+    end
+    
+    def call(n)
+      write_instr CALL
+      write_int n
+    end
+
+    def jump_label(name)
+      jump(@labels[name])
+    end
+
+    def dup
+      write_instr DUP
+    end
+
     def syscall(syscode)
       write_instr SYSCALL
       write_instr syscode
+    end
+
+    def nop
+      write_instr NOP
     end
 
     def write_file

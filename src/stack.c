@@ -5,7 +5,7 @@
 #include "ram.h"
 #include "error.h"
 
-void stack_write(CPU* cpu, RAM* ram, uint8_t byte) {
+void stack_write_byte(CPU* cpu, RAM* ram, uint8_t byte) {
   if (cpu->sp < STACK_END)
     error(STACK_OVERFLOW_ERROR);
 
@@ -13,10 +13,10 @@ void stack_write(CPU* cpu, RAM* ram, uint8_t byte) {
 }
 
 void stack_write_int(CPU* cpu, RAM* ram, int value) {
-  stack_write(cpu, ram, (value >> 0) & 0xFF);
-  stack_write(cpu, ram, (value >> 8) & 0xFF);
-  stack_write(cpu, ram, (value >> 16) & 0xFF);
-  stack_write(cpu, ram, (value >> 24) & 0xFF);
+  stack_write_byte(cpu, ram, (value >> 0) & 0xFF);
+  stack_write_byte(cpu, ram, (value >> 8) & 0xFF);
+  stack_write_byte(cpu, ram, (value >> 16) & 0xFF);
+  stack_write_byte(cpu, ram, (value >> 24) & 0xFF);
 }
 
 uint8_t stack_pop_byte(CPU* cpu, RAM* ram) {

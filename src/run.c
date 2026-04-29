@@ -26,6 +26,10 @@ void run_instr(CPU* cpu, RAM* ram) {
       halt(cpu);
     break;
 
+    case OP_SYSCALL:
+      syscall(cpu, ram);
+    break;
+
     case OP_PUSH:
       push(cpu, ram);
     break;
@@ -46,8 +50,15 @@ void run_instr(CPU* cpu, RAM* ram) {
       op_div(cpu, ram);
     break;
 
-    case OP_SYSCALL:
-      syscall(cpu, ram);
+    case OP_JUMP:
+      jump(cpu, ram);
+    break;
+
+    case OP_DUP:
+      dup(cpu, ram);
+    break;
+
+    case OP_NOP:
     break;
 
     default:
@@ -61,10 +72,10 @@ void halt(CPU* cpu) {
 }
 
 void push(CPU* cpu, RAM* ram) {
-  stack_write(cpu, ram, fetch_instr(cpu, ram));
-  stack_write(cpu, ram, fetch_instr(cpu, ram));
-  stack_write(cpu, ram, fetch_instr(cpu, ram));
-  stack_write(cpu, ram, fetch_instr(cpu, ram));
+  stack_write_byte(cpu, ram, fetch_instr(cpu, ram));
+  stack_write_byte(cpu, ram, fetch_instr(cpu, ram));
+  stack_write_byte(cpu, ram, fetch_instr(cpu, ram));
+  stack_write_byte(cpu, ram, fetch_instr(cpu, ram));
 }
 
 void add(CPU* cpu, RAM* ram) {
@@ -95,7 +106,28 @@ void op_div(CPU* cpu, RAM* ram) {
   stack_write_int(cpu, ram, a / b);
 }
 
+void jump(CPU* cpu, RAM* ram) {
+  int address = fetch_int(cpu, ram);
+  cpu->pc = address;
+}
+
 void get_two_int_from_stack(CPU* cpu, RAM* ram, int* a, int* b) {
   *b = stack_pop_int(cpu, ram);
   *a = stack_pop_int(cpu, ram);
+}
+
+void dup(CPU* cpu, RAM* ram) {
+  if (cpu->sp >= STACK_START)
+    error(MEMORY_UNDERFLOW_ERROR);
+
+  uint8_t byte1, byte2, byte3, byte4;
+  byte1 = ram->data[cpu->sp + 4];
+  byte2 = ram->data[cpu->sp + 3];
+  byte3 = ram->data[cpu->sp + 2];
+  byte4 = ram->data[cpu->sp + 1];
+
+  stack_write_byte(cpu, ram, byte1);
+  stack_write_byte(cpu, ram, byte2);
+  stack_write_byte(cpu, ram, byte3);
+  stack_write_byte(cpu, ram, byte4);
 }
