@@ -20,5 +20,5 @@ asm.jumpz_label("loop")
 
 asm.halt
 
-asm.save_program("test.bin")
+asm.save_program("examples/bin/loop1to10")
 
