@@ -8,8 +8,13 @@
 #include "loader.h"
 #include "run.h"
 
+#define DEBUG 0
+
 void usage() {
-  printf("usage: ./toycpu <file> [options]\n");
+  printf("Usage: toycpu [options] File...\n");
+  printf("Options:\n");
+  printf("  --help\n");
+  printf("  --version\n");
 }
 
 int main(int argc, char* argv[]) {
@@ -33,7 +38,8 @@ int main(int argc, char* argv[]) {
     (load_end_time.tv_sec - load_start_time.tv_sec) + 
     (load_end_time.tv_nsec - load_start_time.tv_nsec) / 1e9;
 
-  printf("[%f] File %s loaded into memory successfully.\n", load_time, file);
+  if (DEBUG)
+    printf("[%f] File %s loaded into memory successfully.\n", load_time, file);
 
   cpu->on = 1;
 
