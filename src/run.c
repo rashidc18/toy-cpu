@@ -22,44 +22,19 @@ void run_instr(CPU* cpu, RAM* ram) {
     debug_instr(cpu, ram, instr);
 
   switch (instr) {
-    case OP_HALT:
-      halt(cpu);
-    break;
+    case OP_SYSCALL:  syscall(cpu, ram);  break;
 
-    case OP_SYSCALL:
-      syscall(cpu, ram);
-    break;
-
-    case OP_PUSH:
-      push(cpu, ram);
-    break;
-
-    case OP_ADD:
-      add(cpu, ram);
-    break;
-
-    case OP_SUB:
-      sub(cpu, ram);
-    break;
-
-    case OP_MUL:
-      mul(cpu, ram);
-    break;
-
-    case OP_DIV:
-      op_div(cpu, ram);
-    break;
-
-    case OP_JUMP:
-      jump(cpu, ram);
-    break;
-
-    case OP_DUP:
-      dup(cpu, ram);
-    break;
-
-    case OP_NOP:
-    break;
+    case OP_HALT:   halt(cpu);         break;
+    case OP_PUSH:   push(cpu, ram);    break;
+    case OP_ADD:    add(cpu, ram);     break;
+    case OP_SUB:    sub(cpu, ram);     break;
+    case OP_MUL:    mul(cpu, ram);     break;
+    case OP_DIV:    op_div(cpu, ram);  break;
+    case OP_JUMP:   jump(cpu, ram);    break;
+    case OP_DUP:    dup(cpu, ram);     break;
+    case OP_EQ:     eq(cpu, ram);      break;
+    case OP_NOP:                       break;
+    case OP_JUMPZ:  jumpz(cpu, ram);   break;
 
     default:
       error(UNKNOWN_INSTRUCTION_ERROR, instr);
@@ -106,9 +81,22 @@ void op_div(CPU* cpu, RAM* ram) {
   stack_write_int(cpu, ram, a / b);
 }
 
+void eq(CPU* cpu, RAM* ram) {
+  int a, b;
+  get_two_int_from_stack(cpu, ram, &a, &b); 
+  stack_write_int(cpu, ram, a == b);
+}
+
 void jump(CPU* cpu, RAM* ram) {
   int address = fetch_int(cpu, ram);
   cpu->pc = address;
+}
+
+void jumpz(CPU* cpu, RAM* ram) {
+  int address = fetch_int(cpu, ram);
+
+  if (stack_pop_int(cpu, ram) == 0)
+    cpu->pc = address;
 }
 
 void get_two_int_from_stack(CPU* cpu, RAM* ram, int* a, int* b) {

@@ -21,9 +21,12 @@ void mul(CPU* cpu, RAM* ram);
 void op_div(CPU* cpu, RAM* ram);
 
 void jump(CPU* cpu, RAM* ram);
+void jumpz(CPU* cpu, RAM* ram);
 void call(CPU* cpu, RAM* ram);
 
 void dup(CPU* cpu, RAM* ram);
+
+void eq(CPU* cpu, RAM* ram);
 
 void get_two_int_from_stack(CPU* cpu, RAM* ram, int* a, int* b);
 

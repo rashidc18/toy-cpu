@@ -12,6 +12,8 @@
 #define OP_CALL 8
 #define OP_DUP 9
 #define OP_NOP 10
+#define OP_EQ 11
+#define OP_JUMPZ 12
 
 extern const char* opcodes_as_string[];
 
