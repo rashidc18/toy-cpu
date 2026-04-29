@@ -1,4 +1,4 @@
-require "./asmdsl"
+require "asmdsl"
 
 asm = Assembler.new
 
@@ -20,5 +20,5 @@ asm.jumpz_label("loop")
 
 asm.halt
 
-asm.save_program("examples/bin/loop1to10")
+asm.save_program("./examples/bin/loop1to10")
 
