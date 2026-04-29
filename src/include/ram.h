@@ -10,5 +10,6 @@ typedef struct {
 } RAM;
 
 RAM* new_ram();
+void ram_write(RAM* ram, int position, uint8_t byte);
 
 #endif

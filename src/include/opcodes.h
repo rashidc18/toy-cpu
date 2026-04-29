@@ -3,7 +3,7 @@
 
 #define OP_HALT 0
 #define OP_PUSH 1
-#define OP_OUT 2
-#define OP_ADD 3
+#define OP_ADD 2
+#define OP_SYSCALL 3
 
 #endif

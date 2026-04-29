@@ -6,8 +6,11 @@
 #include "cpu.h"
 #include "ram.h"
 
-uint8_t fetch_instr(CPU* cpu, RAM* ram);
-void ram_write(RAM* ram, int position, uint8_t byte);
 void run(CPU* cpu, RAM* ram);
+void run_instr(CPU* cpu, RAM* ram);
+
+void halt(CPU* cpu);
+void push(CPU* cpu, RAM* ram);
+void add(CPU* cpu, RAM* ram);
 
 #endif

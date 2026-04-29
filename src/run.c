@@ -6,53 +6,54 @@
 #include "opcodes.h"
 #include "ram.h"
 #include "stack.h"
-
-uint8_t fetch_instr(CPU* cpu, RAM* ram) {
-  if (cpu->pc == RAM_SIZE) {
-    error(MEMORY_OVERFLOW_ERROR);
-  }
-
-  return ram->data[cpu->pc++];
-}
-
-void ram_write(RAM* ram, int position, uint8_t byte) {
-  if (position < 0)
-    error(MEMORY_UNDERFLOW_ERROR);
-  if (position >= RAM_SIZE)
-    error(MEMORY_OVERFLOW_ERROR);
-
-  ram->data[position] = byte;
-}
+#include "syscall.h"
+#include "fetch.h"
 
 void run(CPU* cpu, RAM* ram) {
-
   while (cpu->on) {
-    uint8_t instr = fetch_instr(cpu, ram);
-
-    switch (instr) {
-      case OP_HALT:
-        cpu->on = 0;
-        break;
-
-      case OP_PUSH:
-        stack_write(cpu, ram, fetch_instr(cpu, ram));
-        stack_write(cpu, ram, fetch_instr(cpu, ram));
-        stack_write(cpu, ram, fetch_instr(cpu, ram));
-        stack_write(cpu, ram, fetch_instr(cpu, ram));
-        break;
-      
-      case OP_OUT:
-        printf("%d\n", stack_pop_int(cpu, ram));
-        break;
-
-      case OP_ADD:
-        int b = stack_pop_int(cpu, ram);
-        int a = stack_pop_int(cpu, ram);
-        stack_write_int(cpu, ram, a + b);
-        break;
-
-      default:
-        error(UNKNOWN_INSTRUCTION_ERROR, instr);
-    }
+    run_instr(cpu, ram);
   }
+}
+
+void run_instr(CPU* cpu, RAM* ram) {
+  uint8_t instr = fetch_instr(cpu, ram);
+
+  switch (instr) {
+    case OP_HALT:
+      halt(cpu);
+    break;
+
+    case OP_PUSH:
+      push(cpu, ram);    
+    break;
+
+    case OP_ADD:
+      add(cpu, ram);
+    break;
+
+    case OP_SYSCALL:
+      syscall(cpu, ram);
+    break;
+
+    default:
+      error(UNKNOWN_INSTRUCTION_ERROR, instr);
+    break;
+  }
+}
+
+void halt(CPU* cpu) {
+  cpu->on = 0;
+}
+
+void push(CPU* cpu, RAM* ram) {
+  stack_write(cpu, ram, fetch_instr(cpu, ram));
+  stack_write(cpu, ram, fetch_instr(cpu, ram));
+  stack_write(cpu, ram, fetch_instr(cpu, ram));
+  stack_write(cpu, ram, fetch_instr(cpu, ram));
+}
+
+void add(CPU* cpu, RAM* ram) {
+  int b = stack_pop_int(cpu, ram);
+  int a = stack_pop_int(cpu, ram);
+  stack_write_int(cpu, ram, a + b);
 }

@@ -10,6 +10,7 @@
 #define STACK_UNDERFLOW_ERROR "stack underflow"
 
 #define UNKNOWN_INSTRUCTION_ERROR "unknown instruction `%d`"
+#define UNKNOWN_SYSCALL_CODE_ERROR "unknown syscall code `%d`"
 
 void error(const char* error_message, ...);
 

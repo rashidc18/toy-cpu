@@ -1,44 +1,50 @@
 #!/usr/bin/env ruby
 
-HALT = 0
-PUSH = 1
-OUT = 2
-ADD = 3
+module ASMDSL
+  HALT = 0
+  PUSH = 1
+  ADD = 2
+  SYSCALL = 3
 
-class Assembler
-  def initialize(file)
-    @file = file
-    @bytecode = []
-  end
+  SYSCALL_EXIT = 0
+  SYSCALL_OUT_INT = 1
 
-  def write_instr(instr)
-    @bytecode.push(instr)
-  end
+  class Assembler
+    def initialize(file)
+      @file = file
+      @bytecode = []
+    end
 
-  def push(n)
-    write_instr(PUSH)
-    write_instr((n >> 0) & 0xFF)
-    write_instr((n >> 8) & 0xFF)
-    write_instr((n >> 16) & 0xFF)
-    write_instr((n >> 24) & 0xFF)
-  end
+    def write_instr(instr)
+      @bytecode.push(instr)
+    end
 
-  def out
-    write_instr OUT
-  end
+    def push(n)
+      write_instr(PUSH)
+      write_instr((n >> 0) & 0xFF)
+      write_instr((n >> 8) & 0xFF)
+      write_instr((n >> 16) & 0xFF)
+      write_instr((n >> 24) & 0xFF)
+    end
 
-  def halt
-    write_instr HALT
-  end
+    def halt
+      write_instr HALT
+    end
 
-  def add
-    write_instr ADD
-  end
+    def add
+      write_instr ADD
+    end
 
-  def write_file
-    halt
-    File.open(@file, "wb") do |f|
-      f.write(@bytecode.pack("C*"))
+    def syscall(syscode)
+      write_instr SYSCALL
+      write_instr syscode
+    end
+
+    def write_file
+      halt
+      File.open(@file, "wb") do |f|
+        f.write(@bytecode.pack("C*"))
+      end
     end
   end
 end
