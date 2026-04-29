@@ -13,5 +13,6 @@ const char* opcodes_as_string[] = {
   [OP_DUP] = "DUP",
   [OP_NOP] = "NOP",
   [OP_EQ] = "EQ",
-  [OP_JUMPZ] = "JUMPZ"
+  [OP_JUMPZ] = "JUMPZ",
+  [OP_RET] = "RET"
 };

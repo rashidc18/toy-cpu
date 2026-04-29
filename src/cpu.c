@@ -8,6 +8,7 @@ CPU* new_cpu() {
   CPU* cpu = malloc(sizeof(CPU));
   cpu->pc = 0;
   cpu->on = 0;
+  cpu->fp = 0;
   cpu->sp = STACK_START;
   return cpu;
 }

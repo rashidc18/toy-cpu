@@ -12,6 +12,7 @@ class OpCodes
   NOP = 10
   EQ = 11
   JUMPZ = 12
+  RET = 13
 end
 
 class SysCall
@@ -62,6 +63,15 @@ class Assembler
     add_int(address)
   end
 
+  def call(address)
+    add_instruction(OpCodes::CALL)
+    add_int(address)
+  end
+
+  def call_label(label)
+    call(@labels[label])
+  end
+
   def jumpz(address)
     add_instruction(OpCodes::JUMPZ)
     add_int(address)
@@ -83,7 +93,8 @@ class Assembler
     div: OpCodes::DIV,
     dup: OpCodes::DUP,
     nop: OpCodes::NOP,
-    eq: OpCodes::EQ
+    eq: OpCodes::EQ,
+    ret: OpCodes::RET
   }.each do |name, opcode|
     define_method(name) do
       add_instruction(opcode)

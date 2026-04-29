@@ -4,8 +4,9 @@
 #include <stdint.h>
 
 typedef struct {
-  int pc;
-  int sp;
+  int pc;  /* program counter */
+  int sp;  /* stack pointer */
+  int fp;  /* frame pointer */
   uint8_t on;
 } CPU;
 

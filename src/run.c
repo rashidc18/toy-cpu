@@ -35,6 +35,8 @@ void run_instr(CPU* cpu, RAM* ram) {
     case OP_EQ:     eq(cpu, ram);      break;
     case OP_NOP:                       break;
     case OP_JUMPZ:  jumpz(cpu, ram);   break;
+    case OP_CALL:   call(cpu, ram);    break;
+    case OP_RET:    ret(cpu, ram);     break;
 
     default:
       error(UNKNOWN_INSTRUCTION_ERROR, instr);
@@ -97,6 +99,20 @@ void jumpz(CPU* cpu, RAM* ram) {
 
   if (stack_pop_int(cpu, ram) == 0)
     cpu->pc = address;
+}
+
+void call(CPU* cpu, RAM* ram) {
+  int addr = fetch_int(cpu, ram);
+  stack_write_int(cpu, ram, cpu->fp);
+  stack_write_int(cpu, ram, cpu->pc);
+  cpu->fp = cpu->sp;
+  cpu->pc = addr;
+}
+
+void ret(CPU* cpu, RAM* ram) {
+  cpu->sp = cpu->fp;
+  cpu->pc = stack_pop_int(cpu, ram);
+  cpu->fp = stack_pop_int(cpu, ram);
 }
 
 void get_two_int_from_stack(CPU* cpu, RAM* ram, int* a, int* b) {

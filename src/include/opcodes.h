@@ -14,6 +14,7 @@
 #define OP_NOP 10
 #define OP_EQ 11
 #define OP_JUMPZ 12
+#define OP_RET 13
 
 extern const char* opcodes_as_string[];
 
