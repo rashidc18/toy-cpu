@@ -12,6 +12,8 @@
 #define UNKNOWN_INSTRUCTION_ERROR "unknown instruction `%d`"
 #define UNKNOWN_SYSCALL_CODE_ERROR "unknown syscall code `%d`"
 
+#define ZERO_DIVISION_ERROR "zero division"
+
 void error(const char* error_message, ...);
 
 #endif

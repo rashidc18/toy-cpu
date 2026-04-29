@@ -88,6 +88,10 @@ void mul(CPU* cpu, RAM* ram) {
 void op_div(CPU* cpu, RAM* ram) {
   int a, b;
   get_two_int_from_stack(cpu, ram, &a, &b);
+
+  if (b == 0)
+    error(ZERO_DIVISION_ERROR);
+  
   stack_write_int(cpu, ram, a / b);
 }
 
