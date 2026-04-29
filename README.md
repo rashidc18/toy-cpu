@@ -1,49 +1,55 @@
-# TOY CPU
+# 💾 TOY CPU
 
 A simple virtual CPU written in C.
 
-## Why?
+## ❓ Why?
 - Learning
 - Because it's fun
 
-## Build
-To build the project, make sure you have a C compiler installed (such as gcc or clang).
+## 📦 Install
+To install the project, make sure you have a C compiler installed (such as gcc or clang) and Ruby interpreter.
+```bash
+$ git clone https://github.com/rashidc18/toy-cpu.git
+$ cd toy-cpu
+$ sudo ./install.sh
+```
+
+Or manual build
 ```bash
 $ git clone https://github.com/rashidc18/toy-cpu.git
 $ cd toy-cpu
 $ make
 ```
 
-## Run
-To run, use:
+## 🚀 Usage
 ```bash
-$ ./toycpu file.bin
+$ ./toycpu your-file
 ```
 
-## Assembler
+## </> Assembler
 The project includes a simple assembler DSL implemented in Ruby to make writing programs for the virtual CPU easier.
 
 ### How to use
 Import the assembler dsl.
 ```ruby
-require "./assembler_dsl"
+require "asmdsl"
 ```
 
 Create a new assembler instance.
 ```ruby
-asm = Assembler.new "output.bin"
+asm = Assembler.new
 ```
 
 Use instructions methods.
 ```ruby
-asm.push 10
-asm.push 20
-asm.add
-asm.out
-asm.halt
+asm.push(10)
+asm.syscall(SysCall::OUT_INT)
+
+asm.push(0)
+asm.syscall(SysCall::EXIT)
 ```
 
-Write instructions into output file.
+Save program into output file.
 ```ruby
-asm.write
+asm.save_program("file")
 ```
