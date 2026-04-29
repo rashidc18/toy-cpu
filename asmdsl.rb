@@ -120,6 +120,28 @@ class Assembler
     jumpz(@labels[label])
   end
 
+  def out_int
+    syscall(SysCall::OUT_INT)
+  end
+
+  def out_char
+    syscall(SysCall::OUT_CHAR)
+  end
+
+  def macro_out_int(n)
+    psi(n)
+    out_int
+  end
+
+  def macro_out_char(c)
+    psi(c.ord)
+    out_char
+  end
+
+  def out_endl
+    macro_out_char("\n")
+  end
+
   {
     hlt: OpCodes::HLT,
     iad: OpCodes::IAD,
@@ -129,7 +151,19 @@ class Assembler
     dup: OpCodes::DUP,
     nop: OpCodes::NOP,
     ieq: OpCodes::IEQ,
-    ret: OpCodes::RET
+    ret: OpCodes::RET,
+    imd: OpCodes::IMD,
+    ing: OpCodes::ING,
+    pop: OpCodes::POP,
+    ine: OpCodes::INE,
+    ilt: OpCodes::ILT,
+    ile: OpCodes::ILE,
+    igt: OpCodes::IGT,
+    ige: OpCodes::IGE,
+    int: OpCodes::INT,
+    ian: OpCodes::IAN,
+    ior: OpCodes::IOR,
+
   }.each do |name, opcode|
     define_method(name) do
       add_instruction(opcode)

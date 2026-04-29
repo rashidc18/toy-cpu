@@ -91,6 +91,7 @@ void dup(CPU* cpu, RAM* ram) {
 }
 
 void pop(CPU* cpu, RAM* ram) {
+  stack_pop_int(cpu, ram);
 }
 
 void iad(CPU* cpu, RAM* ram) {
@@ -120,9 +121,17 @@ void idv(CPU* cpu, RAM* ram) {
 }
 
 void imd(CPU* cpu, RAM* ram) {
+  int a, b;
+  get_two_int_from_stack(cpu, ram, &a, &b);
+
+  if (b == 0)
+    error(ZERO_DIVISION_ERROR);
+  
+  stack_write_int(cpu, ram, a % b);
 }
 
 void ing(CPU* cpu, RAM* ram) {
+  stack_write_int(cpu, ram, -stack_pop_int(cpu, ram));
 }
 
 void fad(CPU* cpu, RAM* ram) {
@@ -150,27 +159,49 @@ void ieq(CPU* cpu, RAM* ram) {
 }
 
 void ine(CPU* cpu, RAM* ram) {
+  int a, b;
+  get_two_int_from_stack(cpu, ram, &a, &b); 
+  stack_write_int(cpu, ram, a != b);
 }
 
 void ilt(CPU* cpu, RAM* ram) {
+  int a, b;
+  get_two_int_from_stack(cpu, ram, &a, &b); 
+  stack_write_int(cpu, ram, a < b);
 }
 
 void ile(CPU* cpu, RAM* ram) {
+  int a, b;
+  get_two_int_from_stack(cpu, ram, &a, &b); 
+  stack_write_int(cpu, ram, a <= b);
 }
 
 void igt(CPU* cpu, RAM* ram) {
+  int a, b;
+  get_two_int_from_stack(cpu, ram, &a, &b); 
+  stack_write_int(cpu, ram, a > b);
 }
 
 void ige(CPU* cpu, RAM* ram) {
+  int a, b;
+  get_two_int_from_stack(cpu, ram, &a, &b); 
+  stack_write_int(cpu, ram, a >= b);
 }
 
 void int_(CPU* cpu, RAM* ram) {
+  stack_write_int(cpu, ram, !stack_pop_int(cpu, ram));
 }
 
 void ian(CPU* cpu, RAM* ram) {
+  int a, b;
+  get_two_int_from_stack(cpu, ram, &a, &b); 
+  stack_write_int(cpu, ram, a && b);
 }
 
 void ior(CPU* cpu, RAM* ram) {
+  int a, b;
+  get_two_int_from_stack(cpu, ram, &a, &b); 
+  stack_write_int(cpu, ram, a || b);
 }
 
 void feq(CPU* cpu, RAM* ram) {
