@@ -31,7 +31,7 @@ require "./assembler_dsl"
 
 Create a new assembler instance.
 ```ruby
-asm = Assembler.asm "output.bin"
+asm = Assembler.new "output.bin"
 ```
 
 Use instructions methods.
