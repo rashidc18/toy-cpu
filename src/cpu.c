@@ -2,6 +2,7 @@
 
 #include "cpu.h"
 #include "ram.h"
+#include "stack.h"
 
 CPU* new_cpu() {
   CPU* cpu = malloc(sizeof(CPU));
