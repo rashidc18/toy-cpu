@@ -23,7 +23,7 @@ $ make
 
 ## 🚀 Usage
 ```bash
-$ ./toycpu your-file
+$ toycpu your-file
 ```
 
 ## </> Assembler
