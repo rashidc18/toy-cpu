@@ -42,12 +42,3 @@ class Assembler
     end
   end
 end
-
-asm = Assembler.new "test.bin"
-
-asm.push 123
-asm.push 1234
-asm.add
-asm.out
-
-asm.write_file
