@@ -1,18 +1,52 @@
 class OpCodes
-  HALT = 0
-  SYSCALL = 1
-  PUSH = 2
-  ADD = 3
-  SUB = 4
-  MUL = 5
-  DIV = 6
-  JUMP = 7
-  CALL = 8
-  DUP = 9
-  NOP = 10
-  EQ = 11
-  JUMPZ = 12
-  RET = 13
+  HLT      =  0
+  NOP      =  1
+  PSI      =  2
+  PSF      =  3
+  DUP      =  4
+  POP      =  5
+  IAD      =  6
+  ISB      =  7
+  IML      =  8
+  IDV      =  9
+  IMD      = 10
+  ING      = 11
+  FAD      = 12
+  FSB      = 13
+  FML      = 14
+  FDV      = 15
+  FMD      = 16
+  FNG      = 17
+  IEQ      = 18
+  INE      = 19
+  ILT      = 20
+  ILE      = 21
+  IGT      = 22
+  IGE      = 23
+  INT      = 24
+  IAN      = 25
+  IOR      = 26
+  FEQ      = 27
+  FNE      = 28
+  FLT      = 29
+  FLE      = 30
+  FGT      = 31
+  FGE      = 32
+  FNT      = 33
+  FAN      = 34
+  FOR      = 35
+  ILD      = 36
+  IST      = 37
+  FLD      = 38
+  FST      = 39
+  ITF      = 40
+  FTI      = 41
+  JMP      = 42
+  JPZ      = 43
+  JNZ      = 44
+  CAL      = 45
+  RET      = 46
+  SYSCALL  = 47
 end
 
 class SysCall
@@ -54,18 +88,18 @@ class Assembler
     add_instruction(syscode)
   end
 
-  def push(value)
-    add_instruction(OpCodes::PUSH)
+  def psi(value)
+    add_instruction(OpCodes::PSI)
     add_int(value)
   end
 
   def jump(address)
-    add_instruction(OpCodes::JUMP)
+    add_instruction(OpCodes::JMP)
     add_int(address)
   end
 
   def call(address)
-    add_instruction(OpCodes::CALL)
+    add_instruction(OpCodes::CAL)
     add_int(address)
   end
 
@@ -74,7 +108,7 @@ class Assembler
   end
 
   def jumpz(address)
-    add_instruction(OpCodes::JUMPZ)
+    add_instruction(OpCodes::JPZ)
     add_int(address)
   end
 
@@ -87,14 +121,14 @@ class Assembler
   end
 
   {
-    halt: OpCodes::HALT,
-    add: OpCodes::ADD,
-    sub: OpCodes::SUB,
-    mul: OpCodes::MUL,
-    div: OpCodes::DIV,
+    hlt: OpCodes::HLT,
+    iad: OpCodes::IAD,
+    isb: OpCodes::ISB,
+    iml: OpCodes::IML,
+    idv: OpCodes::IDV,
     dup: OpCodes::DUP,
     nop: OpCodes::NOP,
-    eq: OpCodes::EQ,
+    ieq: OpCodes::IEQ,
     ret: OpCodes::RET
   }.each do |name, opcode|
     define_method(name) do

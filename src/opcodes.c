@@ -6,96 +6,72 @@
 #include "fetch.h"
 
 const char* opcodes_as_string[] = {
-  [OP_HALT] = "HALT",
-  [OP_SYSCALL] = "SYSCALL",
-  [OP_PUSH] = "PUSH",
-  [OP_ADD] = "ADD",
-  [OP_SUB] = "SUB",
-  [OP_MUL] = "MUL",
-  [OP_DIV] = "DIV",
-  [OP_JUMP] = "JUMP",
-  [OP_CALL] = "CALL",
-  [OP_DUP] = "DUP",
-  [OP_NOP] = "NOP",
-  [OP_EQ] = "EQ",
-  [OP_JUMPZ] = "JUMPZ",
-  [OP_RET] = "RET"
+  [HLT] = "HLT",
+  [NOP] = "NOP",
+  [PSI] = "PSI",
+  [PSF] = "PSF",
+  [DUP] = "DUP",
+  [POP] = "POP",
+  [IAD] = "IAD",
+  [ISB] = "ISB",
+  [IML] = "IML",
+  [IDV] = "IDV",
+  [IMD] = "IMD",
+  [ING] = "ING",
+  [FAD] = "FAD",
+  [FSB] = "FSB",
+  [FML] = "FML",
+  [FDV] = "FDV",
+  [FMD] = "FMD",
+  [FNG] = "FNG",
+  [IEQ] = "IEQ",
+  [INE] = "INE",
+  [ILT] = "ILT",
+  [ILE] = "ILE",
+  [IGT] = "IGT",
+  [IGE] = "IGE",
+  [INT] = "INT",
+  [IAN] = "IAN",
+  [IOR] = "IOR",
+  [FEQ] = "FEQ",
+  [FNE] = "FNE",
+  [FLT] = "FLT",
+  [FLE] = "FLE",
+  [FGT] = "FGT",
+  [FGE] = "FGE",
+  [FNT] = "FNT",
+  [FAN] = "FAN",
+  [FOR] = "FOR",
+  [ILD] = "ILD",
+  [IST] = "IST",
+  [FLD] = "FLD",
+  [FST] = "FST",
+  [ITF] = "ITF",
+  [FTI] = "FTI",
+  [JMP] = "JMP",
+  [JPZ] = "JPZ",
+  [JNZ] = "JNZ",
+  [CAL] = "CAL",
+  [RET] = "RET",
+  [SYSCALL] = "SYSCALL"
 };
 
-void halt(CPU* cpu) {
+void hlt(CPU* cpu) {
   cpu->on = 0;
 }
 
-void push(CPU* cpu, RAM* ram) {
+void nop() {
+  /* do nothing */
+}
+
+void psi(CPU* cpu, RAM* ram) {
   stack_write_byte(cpu, ram, fetch_instr(cpu, ram));
   stack_write_byte(cpu, ram, fetch_instr(cpu, ram));
   stack_write_byte(cpu, ram, fetch_instr(cpu, ram));
   stack_write_byte(cpu, ram, fetch_instr(cpu, ram));
 }
 
-void add(CPU* cpu, RAM* ram) {
-  int a, b;
-  get_two_int_from_stack(cpu, ram, &a, &b);
-  stack_write_int(cpu, ram, a + b);
-}
-
-void sub(CPU* cpu, RAM* ram) {
-  int a, b;
-  get_two_int_from_stack(cpu, ram, &a, &b);
-  stack_write_int(cpu, ram, a - b);
-}
-
-void mul(CPU* cpu, RAM* ram) {
-  int a, b;
-  get_two_int_from_stack(cpu, ram, &a, &b);
-  stack_write_int(cpu, ram, a * b);
-}
-
-void op_div(CPU* cpu, RAM* ram) {
-  int a, b;
-  get_two_int_from_stack(cpu, ram, &a, &b);
-
-  if (b == 0)
-    error(ZERO_DIVISION_ERROR);
-  
-  stack_write_int(cpu, ram, a / b);
-}
-
-void eq(CPU* cpu, RAM* ram) {
-  int a, b;
-  get_two_int_from_stack(cpu, ram, &a, &b); 
-  stack_write_int(cpu, ram, a == b);
-}
-
-void jump(CPU* cpu, RAM* ram) {
-  int address = fetch_int(cpu, ram);
-  cpu->pc = address;
-}
-
-void jumpz(CPU* cpu, RAM* ram) {
-  int address = fetch_int(cpu, ram);
-
-  if (stack_pop_int(cpu, ram) == 0)
-    cpu->pc = address;
-}
-
-void call(CPU* cpu, RAM* ram) {
-  int addr = fetch_int(cpu, ram);
-  stack_write_int(cpu, ram, cpu->fp);
-  stack_write_int(cpu, ram, cpu->pc);
-  cpu->fp = cpu->sp;
-  cpu->pc = addr;
-}
-
-void ret(CPU* cpu, RAM* ram) {
-  cpu->sp = cpu->fp;
-  cpu->pc = stack_pop_int(cpu, ram);
-  cpu->fp = stack_pop_int(cpu, ram);
-}
-
-void get_two_int_from_stack(CPU* cpu, RAM* ram, int* a, int* b) {
-  *b = stack_pop_int(cpu, ram);
-  *a = stack_pop_int(cpu, ram);
+void psf(CPU* cpu, RAM* ram) {
 }
 
 void dup(CPU* cpu, RAM* ram) {
@@ -114,3 +90,164 @@ void dup(CPU* cpu, RAM* ram) {
   stack_write_byte(cpu, ram, byte4);
 }
 
+void pop(CPU* cpu, RAM* ram) {
+}
+
+void iad(CPU* cpu, RAM* ram) {
+  int a, b;
+  get_two_int_from_stack(cpu, ram, &a, &b);
+  stack_write_int(cpu, ram, a + b);
+}
+
+void isb(CPU* cpu, RAM* ram) {
+  int a, b;
+  get_two_int_from_stack(cpu, ram, &a, &b);
+  stack_write_int(cpu, ram, a - b);
+}
+void iml(CPU* cpu, RAM* ram) {
+  int a, b;
+  get_two_int_from_stack(cpu, ram, &a, &b);
+  stack_write_int(cpu, ram, a * b);
+}
+void idv(CPU* cpu, RAM* ram) {
+  int a, b;
+  get_two_int_from_stack(cpu, ram, &a, &b);
+
+  if (b == 0)
+    error(ZERO_DIVISION_ERROR);
+  
+  stack_write_int(cpu, ram, a / b);
+}
+
+void imd(CPU* cpu, RAM* ram) {
+}
+
+void ing(CPU* cpu, RAM* ram) {
+}
+
+void fad(CPU* cpu, RAM* ram) {
+}
+
+void fsb(CPU* cpu, RAM* ram) {
+}
+
+void fml(CPU* cpu, RAM* ram) {
+}
+
+void fdv(CPU* cpu, RAM* ram) {
+}
+
+void fmd(CPU* cpu, RAM* ram) {
+}
+
+void fng(CPU* cpu, RAM* ram) {
+}
+
+void ieq(CPU* cpu, RAM* ram) {
+  int a, b;
+  get_two_int_from_stack(cpu, ram, &a, &b); 
+  stack_write_int(cpu, ram, a == b);
+}
+
+void ine(CPU* cpu, RAM* ram) {
+}
+
+void ilt(CPU* cpu, RAM* ram) {
+}
+
+void ile(CPU* cpu, RAM* ram) {
+}
+
+void igt(CPU* cpu, RAM* ram) {
+}
+
+void ige(CPU* cpu, RAM* ram) {
+}
+
+void int_(CPU* cpu, RAM* ram) {
+}
+
+void ian(CPU* cpu, RAM* ram) {
+}
+
+void ior(CPU* cpu, RAM* ram) {
+}
+
+void feq(CPU* cpu, RAM* ram) {
+}
+
+void fne(CPU* cpu, RAM* ram) {
+}
+
+void flt(CPU* cpu, RAM* ram) {
+}
+
+void fle(CPU* cpu, RAM* ram) {
+}
+
+void fgt(CPU* cpu, RAM* ram) {
+}
+
+void fge(CPU* cpu, RAM* ram) {
+}
+
+void fnt(CPU* cpu, RAM* ram) {
+}
+
+void fan(CPU* cpu, RAM* ram) {
+}
+
+void for_(CPU* cpu, RAM* ram) {
+}
+
+void ild(CPU* cpu, RAM* ram) {
+}
+
+void ist(CPU* cpu, RAM* ram) {
+}
+
+void fld(CPU* cpu, RAM* ram) {
+}
+
+void fst(CPU* cpu, RAM* ram) {
+}
+
+void itf(CPU* cpu, RAM* ram) {
+}
+
+void fti(CPU* cpu, RAM* ram) {
+}
+
+void jmp(CPU* cpu, RAM* ram) {
+  int address = fetch_int(cpu, ram);
+  cpu->pc = address;
+}
+
+void jpz(CPU* cpu, RAM* ram) {
+  int address = fetch_int(cpu, ram);
+
+  if (stack_pop_int(cpu, ram) == 0)
+    cpu->pc = address;
+}
+
+void jnz(CPU* cpu, RAM* ram) {
+}
+
+void cal(CPU* cpu, RAM* ram) {
+  int addr = fetch_int(cpu, ram);
+  stack_write_int(cpu, ram, cpu->fp);
+  stack_write_int(cpu, ram, cpu->pc);
+  cpu->fp = cpu->sp;
+  cpu->pc = addr;
+}
+
+void ret(CPU* cpu, RAM* ram) {
+  cpu->sp = cpu->fp;
+  cpu->pc = stack_pop_int(cpu, ram);
+  cpu->fp = stack_pop_int(cpu, ram);
+}
+
+void get_two_int_from_stack(CPU* cpu, RAM* ram, int* a, int* b) {
+  *b = stack_pop_int(cpu, ram);
+  *a = stack_pop_int(cpu, ram);
+}
