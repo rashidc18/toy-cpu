@@ -10,8 +10,8 @@
 #define STACK_START (RAM_SIZE - 1)
 #define STACK_END (STACK_START - STACK_SIZE + 1)
 
-void stack_write_byte(CPU* cpu, RAM *ram, uint8_t byte);
-void stack_write_int(CPU* cpu, RAM* ram, int value);
+void stack_push_byte(CPU* cpu, RAM *ram, uint8_t byte);
+void stack_push_int(CPU* cpu, RAM* ram, int value);
 uint8_t stack_pop_byte(CPU* cpu, RAM *ram);
 int stack_pop_int(CPU *cpu, RAM* ran);
 

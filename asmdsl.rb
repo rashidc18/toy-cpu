@@ -4,49 +4,53 @@ class OpCodes
   PSI      =  2
   PSF      =  3
   DUP      =  4
-  POP      =  5
-  IAD      =  6
-  ISB      =  7
-  IML      =  8
-  IDV      =  9
-  IMD      = 10
-  ING      = 11
-  FAD      = 12
-  FSB      = 13
-  FML      = 14
-  FDV      = 15
-  FMD      = 16
-  FNG      = 17
-  IEQ      = 18
-  INE      = 19
-  ILT      = 20
-  ILE      = 21
-  IGT      = 22
-  IGE      = 23
-  INT      = 24
-  IAN      = 25
-  IOR      = 26
-  FEQ      = 27
-  FNE      = 28
-  FLT      = 29
-  FLE      = 30
-  FGT      = 31
-  FGE      = 32
-  FNT      = 33
-  FAN      = 34
-  FOR      = 35
-  ILD      = 36
-  IST      = 37
-  FLD      = 38
-  FST      = 39
-  ITF      = 40
-  FTI      = 41
-  JMP      = 42
-  JPZ      = 43
-  JNZ      = 44
-  CAL      = 45
-  RET      = 46
-  SYSCALL  = 47
+  ISP      =  5
+  FSP      =  6
+  IFS      =  7
+  FIS      =  8
+  POP      =  9
+  IAD      = 10
+  ISB      = 11
+  IML      = 12
+  IDV      = 13
+  IMD      = 14
+  ING      = 15
+  FAD      = 16
+  FSB      = 17
+  FML      = 18
+  FDV      = 19
+  FMD      = 20
+  FNG      = 21
+  IEQ      = 22
+  INE      = 23
+  ILT      = 24
+  ILE      = 25
+  IGT      = 26
+  IGE      = 27
+  INT      = 28
+  IAN      = 29
+  IOR      = 30
+  FEQ      = 31
+  FNE      = 32
+  FLT      = 33
+  FLE      = 34
+  FGT      = 35
+  FGE      = 36
+  FNT      = 37
+  FAN      = 38
+  FOR      = 39
+  ILD      = 40
+  IST      = 41
+  FLD      = 42
+  FST      = 43
+  ITF      = 44
+  FTI      = 45
+  JMP      = 46
+  JPZ      = 47
+  JNZ      = 48
+  CAL      = 49
+  RET      = 50
+  SYSCALL  = 51
 end
 
 class SysCall
@@ -60,9 +64,11 @@ class Assembler
   def initialize
     @program = []
     @labels = {}
+    @labels_to_link = {} # "label" => program position that need to be linked
   end
 
   def save_program(file)
+    link_labels()
     File.open(file, "wb") do |f|
       f.write(@program.pack("C*"))
     end
@@ -72,74 +78,120 @@ class Assembler
     @labels[label] = @program.size
   end
 
+  def get_label(label)
+    if @labels.has_key?(label)
+      return @labels[label]
+    else
+      @labels_to_link[label] = @program.size+1
+      return 0
+    end
+  end
+
+  def entry_point(label)
+    jmp_label(label)
+  end
+
   def add_instruction(instr)
     @program.push(instr)
   end
 
+  def int_to_bytes(value)
+    return [
+      (value >> 0) & 0xFF,
+      (value >> 8) & 0xFF,
+      (value >> 16) & 0xFF,
+      (value >> 24) & 0xFF,
+    ]
+  end
+
   def add_int(value)
-    add_instruction((value >> 0) & 0xFF)
-    add_instruction((value >> 8) & 0xFF)
-    add_instruction((value >> 16) & 0xFF)
-    add_instruction((value >> 24) & 0xFF)
+    int_to_bytes(value).each do |byte|
+      add_instruction(byte)
+    end
   end
 
-  def syscall(syscode)
-    add_instruction(OpCodes::SYSCALL)
-    add_instruction(syscode)
+  def cal_label(label)
+    cal(get_label(label))
   end
 
-  def psi(value)
-    add_instruction(OpCodes::PSI)
-    add_int(value)
-  end
-
-  def jump(address)
-    add_instruction(OpCodes::JMP)
-    add_int(address)
-  end
-
-  def call(address)
-    add_instruction(OpCodes::CAL)
-    add_int(address)
-  end
-
-  def call_label(label)
-    call(@labels[label])
-  end
-
-  def jumpz(address)
+  def jpz(address)
     add_instruction(OpCodes::JPZ)
     add_int(address)
   end
 
-  def jump_label(label)
-    jump(@labels[label])
+  def jmp_label(label)
+    jmp(get_label(label))
   end
 
-  def jumpz_label(label)
-    jumpz(@labels[label])
+  def jpz_label(label)
+    jpz(get_label(label))
   end
 
-  def out_int
-    syscall(SysCall::OUT_INT)
+  def link_labels
+    @labels_to_link.each do |label, position|
+      if !@labels.has_key?(label)
+        puts "error: label `#{label}` was not defined."
+        exit 1
+      end
+      address = @labels[label]
+      bytes = int_to_bytes(address)
+      
+      i = 0
+      bytes.each do |byte|
+        @program[position + i] = byte
+        i += 1
+      end
+    end
   end
 
-  def out_char
-    syscall(SysCall::OUT_CHAR)
+  def show_program
+    @labels.each do |k,v|
+      puts format("%s: %.3d", k, v)
+    end
+
+    column = 1
+    column_max = 5
+    program = ""
+
+    i = 0
+    @program.each do |byte|
+      if column == 1
+        program += format("%.3d: ", i)
+      end
+      
+      program += format("%.3d ", byte)
+
+      if column == column_max
+        column = 1
+        program += "\n"
+      else
+        column += 1
+      end
+
+      i += 1
+    end
+
+    puts program
   end
 
-  def macro_out_int(n)
-    psi(n)
-    out_int
+  {
+    syscall: OpCodes::SYSCALL
+  }.each do |name, opcode|
+    define_method(name) do |bytev|
+      add_instruction(opcode)
+      add_instruction(bytev)
+    end
   end
 
-  def macro_out_char(c)
-    psi(c.ord)
-    out_char
-  end
-
-  def out_endl
-    macro_out_char("\n")
+  {
+    psi: OpCodes::PSI,
+    jmp:  OpCodes::JMP,
+    cal: OpCodes::CAL
+  }.each do |name, opcode|
+    define_method(name) do |intv|
+      add_instruction(opcode)
+      add_int(intv)
+    end
   end
 
   {
@@ -163,13 +215,12 @@ class Assembler
     int: OpCodes::INT,
     ian: OpCodes::IAN,
     ior: OpCodes::IOR,
-
+    isp: OpCodes::ISP,
   }.each do |name, opcode|
     define_method(name) do
       add_instruction(opcode)
     end
   end
-
 end 
 
 def char(c)

@@ -9,16 +9,16 @@
 #include "fetch.h"
 #include "debug.h"
 
-void run(CPU* cpu, RAM* ram) {
+void run(CPU* cpu, RAM* ram, int debug_option) {
   while (cpu->on) {
-    run_instr(cpu, ram);
+    run_instr(cpu, ram, debug_option);
   }
 }
 
-void run_instr(CPU* cpu, RAM* ram) {
+void run_instr(CPU* cpu, RAM* ram, int debug_option) {
   uint8_t instr = fetch_instr(cpu, ram);
 
-  if (DEBUG)
+  if (debug_option)
     debug_instr(cpu, ram, instr);
 
   switch (instr) {

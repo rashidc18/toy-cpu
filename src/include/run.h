@@ -6,9 +6,7 @@
 #include "cpu.h"
 #include "ram.h"
 
-#define DEBUG 0
-
-void run(CPU* cpu, RAM* ram);
-void run_instr(CPU* cpu, RAM* ram);
+void run(CPU* cpu, RAM* ram, int debug_option);
+void run_instr(CPU* cpu, RAM* ram, int debug_option);
 
 #endif

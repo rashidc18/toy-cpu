@@ -6,7 +6,7 @@
 typedef struct {
   int pc;  /* program counter */
   int sp;  /* stack pointer */
-  int fp;  /* frame pointer */
+  int csp; /* call stack pointer*/
   uint8_t on;
 } CPU;
 

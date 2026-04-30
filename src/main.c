@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <memory.h>
 
 #include "cpu.h"
 #include "ram.h"
@@ -14,6 +15,7 @@ void usage() {
   printf("Options:\n");
   printf("  --help             Display this information.\n");
   printf("  --version          Display compiler version information.\n");
+  printf("  --debug            Debug program.\n");
 }
 
 int main(int argc, char* argv[]) {
@@ -23,6 +25,7 @@ int main(int argc, char* argv[]) {
   }
 
   char* file = argv[1];
+  int debug_option = 0;
 
   if (argc > 2) {
     char* option = argv[2];
@@ -35,6 +38,8 @@ int main(int argc, char* argv[]) {
       puts(TOY_CPU_VERSION);
       exit(0);
     }
+    else if (strcmp(option, "--debug") == 0) 
+      debug_option = 1;
     else {
       printf("unknown option: `%s`.\n", option);
       usage();
@@ -48,7 +53,9 @@ int main(int argc, char* argv[]) {
 
   cpu->on = 1;
 
-  run(cpu, ram);
+  run(cpu, ram, debug_option);
+  free(cpu);
+  free(ram);
 
   return 0;
 }

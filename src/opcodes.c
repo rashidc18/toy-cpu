@@ -4,6 +4,7 @@
 #include "ram.h"
 #include "cpu.h"
 #include "fetch.h"
+#include "call_stack.h"
 
 const char* opcodes_as_string[] = {
   [HLT] = "HLT",
@@ -69,10 +70,10 @@ void nop() {
 }
 
 void psi(CPU* cpu, RAM* ram) {
-  stack_write_byte(cpu, ram, fetch_instr(cpu, ram));
-  stack_write_byte(cpu, ram, fetch_instr(cpu, ram));
-  stack_write_byte(cpu, ram, fetch_instr(cpu, ram));
-  stack_write_byte(cpu, ram, fetch_instr(cpu, ram));
+  stack_push_byte(cpu, ram, fetch_instr(cpu, ram));
+  stack_push_byte(cpu, ram, fetch_instr(cpu, ram));
+  stack_push_byte(cpu, ram, fetch_instr(cpu, ram));
+  stack_push_byte(cpu, ram, fetch_instr(cpu, ram));
 }
 
 void psf(CPU* cpu, RAM* ram) {
@@ -88,17 +89,17 @@ void dup(CPU* cpu, RAM* ram) {
   byte3 = ram->data[cpu->sp + 2];
   byte4 = ram->data[cpu->sp + 1];
 
-  stack_write_byte(cpu, ram, byte1);
-  stack_write_byte(cpu, ram, byte2);
-  stack_write_byte(cpu, ram, byte3);
-  stack_write_byte(cpu, ram, byte4);
+  stack_push_byte(cpu, ram, byte1);
+  stack_push_byte(cpu, ram, byte2);
+  stack_push_byte(cpu, ram, byte3);
+  stack_push_byte(cpu, ram, byte4);
 }
 
 void isp(CPU *cpu, RAM* ram) {
   int a, b;
   get_two_int_from_stack(cpu, ram, &a, &b);
-  stack_write_int(cpu, ram, b);
-  stack_write_int(cpu, ram, a);
+  stack_push_int(cpu, ram, b);
+  stack_push_int(cpu, ram, a);
 }
 
 void fsp(CPU *cpu, RAM* ram) {
@@ -117,18 +118,18 @@ void pop(CPU* cpu, RAM* ram) {
 void iad(CPU* cpu, RAM* ram) {
   int a, b;
   get_two_int_from_stack(cpu, ram, &a, &b);
-  stack_write_int(cpu, ram, a + b);
+  stack_push_int(cpu, ram, a + b);
 }
 
 void isb(CPU* cpu, RAM* ram) {
   int a, b;
   get_two_int_from_stack(cpu, ram, &a, &b);
-  stack_write_int(cpu, ram, a - b);
+  stack_push_int(cpu, ram, a - b);
 }
 void iml(CPU* cpu, RAM* ram) {
   int a, b;
   get_two_int_from_stack(cpu, ram, &a, &b);
-  stack_write_int(cpu, ram, a * b);
+  stack_push_int(cpu, ram, a * b);
 }
 void idv(CPU* cpu, RAM* ram) {
   int a, b;
@@ -137,7 +138,7 @@ void idv(CPU* cpu, RAM* ram) {
   if (b == 0)
     error(ZERO_DIVISION_ERROR);
   
-  stack_write_int(cpu, ram, a / b);
+  stack_push_int(cpu, ram, a / b);
 }
 
 void imd(CPU* cpu, RAM* ram) {
@@ -147,11 +148,11 @@ void imd(CPU* cpu, RAM* ram) {
   if (b == 0)
     error(ZERO_DIVISION_ERROR);
   
-  stack_write_int(cpu, ram, a % b);
+  stack_push_int(cpu, ram, a % b);
 }
 
 void ing(CPU* cpu, RAM* ram) {
-  stack_write_int(cpu, ram, -stack_pop_int(cpu, ram));
+  stack_push_int(cpu, ram, -stack_pop_int(cpu, ram));
 }
 
 void fad(CPU* cpu, RAM* ram) {
@@ -175,53 +176,53 @@ void fng(CPU* cpu, RAM* ram) {
 void ieq(CPU* cpu, RAM* ram) {
   int a, b;
   get_two_int_from_stack(cpu, ram, &a, &b); 
-  stack_write_int(cpu, ram, a == b);
+  stack_push_int(cpu, ram, a == b);
 }
 
 void ine(CPU* cpu, RAM* ram) {
   int a, b;
   get_two_int_from_stack(cpu, ram, &a, &b); 
-  stack_write_int(cpu, ram, a != b);
+  stack_push_int(cpu, ram, a != b);
 }
 
 void ilt(CPU* cpu, RAM* ram) {
   int a, b;
   get_two_int_from_stack(cpu, ram, &a, &b); 
-  stack_write_int(cpu, ram, a < b);
+  stack_push_int(cpu, ram, a < b);
 }
 
 void ile(CPU* cpu, RAM* ram) {
   int a, b;
   get_two_int_from_stack(cpu, ram, &a, &b); 
-  stack_write_int(cpu, ram, a <= b);
+  stack_push_int(cpu, ram, a <= b);
 }
 
 void igt(CPU* cpu, RAM* ram) {
   int a, b;
   get_two_int_from_stack(cpu, ram, &a, &b); 
-  stack_write_int(cpu, ram, a > b);
+  stack_push_int(cpu, ram, a > b);
 }
 
 void ige(CPU* cpu, RAM* ram) {
   int a, b;
   get_two_int_from_stack(cpu, ram, &a, &b); 
-  stack_write_int(cpu, ram, a >= b);
+  stack_push_int(cpu, ram, a >= b);
 }
 
 void int_(CPU* cpu, RAM* ram) {
-  stack_write_int(cpu, ram, !stack_pop_int(cpu, ram));
+  stack_push_int(cpu, ram, !stack_pop_int(cpu, ram));
 }
 
 void ian(CPU* cpu, RAM* ram) {
   int a, b;
   get_two_int_from_stack(cpu, ram, &a, &b); 
-  stack_write_int(cpu, ram, a && b);
+  stack_push_int(cpu, ram, a && b);
 }
 
 void ior(CPU* cpu, RAM* ram) {
   int a, b;
   get_two_int_from_stack(cpu, ram, &a, &b); 
-  stack_write_int(cpu, ram, a || b);
+  stack_push_int(cpu, ram, a || b);
 }
 
 void feq(CPU* cpu, RAM* ram) {
@@ -285,17 +286,13 @@ void jnz(CPU* cpu, RAM* ram) {
 }
 
 void cal(CPU* cpu, RAM* ram) {
-  int addr = fetch_int(cpu, ram);
-  stack_write_int(cpu, ram, cpu->fp);
-  stack_write_int(cpu, ram, cpu->pc);
-  cpu->fp = cpu->sp;
-  cpu->pc = addr;
+  int address = fetch_int(cpu, ram);
+  call_stack_push(cpu, ram, cpu->pc);
+  cpu->pc = address;
 }
 
 void ret(CPU* cpu, RAM* ram) {
-  cpu->sp = cpu->fp;
-  cpu->pc = stack_pop_int(cpu, ram);
-  cpu->fp = stack_pop_int(cpu, ram);
+  cpu->pc = call_stack_pop(cpu, ram);
 }
 
 void get_two_int_from_stack(CPU* cpu, RAM* ram, int* a, int* b) {
