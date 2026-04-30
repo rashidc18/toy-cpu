@@ -81,6 +81,13 @@ SYSCALLS = {
 	'%SLEEP': 3 
 }
 
+ESCAPE_CHARS = {
+	'\\n': '\n',
+	'\\t': '\t',
+	'\\r': '\r',
+	"\\'": "'"
+}
+
 def get_file_lines(file):
 	try:
 		with open(file, 'r') as f:
@@ -182,6 +189,10 @@ class LabelIsNotDefined(Error):
 	def __init__(self, position, label):
 		super().__init__(position, f'label `{label}` is not defined')
 
+class IllegalCharError(Error):
+	def __init__(self, position, char):
+		super().__init__(position, f'illegal char {char}')
+
 class Position:
 	def __init__(self, file, line, start, end):
 		self.file = file
@@ -252,16 +263,18 @@ class CodeGenerator:
 
 	def link_labels(self):
 		for label in self.labels_to_link:
-			token_position, program_position = self.labels_to_link[label]
-			if not label in self.labels:
-				LabelIsNotDefined(token_position, label).emit()
-			
-			bytes_ = int_to_bytes(self.labels[label])
+			links = self.labels_to_link[label]
+			for link in links:
+				token_position, program_position = link
+				if not label in self.labels:
+					LabelIsNotDefined(token_position, label).emit()
 
-			i = 0
-			for byte in bytes_:
-				self.program[program_position+i] = byte
-				i += 1
+				bytes_ = int_to_bytes(self.labels[label])
+
+				i = 0
+				for byte in bytes_:
+					self.program[program_position+i] = byte
+					i += 1
 
 	def generate(self):
 		while self.position < len(self.tokens):
@@ -274,8 +287,13 @@ class CodeGenerator:
 					if instruction.literal in LABEL_ARG_OPCODES:
 						label = self.token
 						self.token_match(TokenType.LABEL)
+						
+						label_to_link = (label.position, len(self.program))
+						if not label.literal in self.labels_to_link:
+							self.labels_to_link[label.literal] = [label_to_link]
+						else:
+							self.labels_to_link[label.literal].append(label_to_link)
 
-						self.labels_to_link[label.literal] = (label.position, len(self.program))
 						self.push_int(0)  # temporary address
 					
 					elif instruction.literal == 'SYSCALL':
@@ -308,6 +326,12 @@ class CodeGenerator:
 		return self.program
 	
 	def show_program(self):
+		for label in self.labels:
+			print(f'{label+":":<10} {self.labels[label]}')
+		
+		print()
+		print('          +1  +2  +3  +4')
+
 		program_as_string = ''
 		column = 1
 		max_column = 5
@@ -358,6 +382,17 @@ def tokenize(file):
 			elif instruction.upper() in SYSCALLS:
 				instruction = instruction.upper()
 				typ = TokenType.SYSCALL
+
+			elif instruction[0] == '\'' and instruction[-1] == '\'' and len(instruction) > 0:
+				instruction = instruction[1:-1]
+				if instruction in ESCAPE_CHARS:
+					instruction = ESCAPE_CHARS[instruction]
+				
+				if len(instruction) != 1:
+					IllegalCharError(position, f"'{instruction}'").emit()
+				
+				typ = TokenType.NUMBER
+				instruction = ord(instruction)
 			
 			else:
 				try:
@@ -409,7 +444,7 @@ def parse_options():
 			if len(sys.argv) == 0:
 				usage('missing output file')
 			
-			options['-o'] == sys.argv.pop(0)
+			options['-o'] = sys.argv.pop(0)
 		
 		# -f cant be passed
 		elif option in options and option != '-f':
