@@ -60,6 +60,12 @@ OPCODES = {
 ONE_ARG_OPCODES = [
 	'PSI',
 	'PSF',
+	'ILD',
+	'IST',
+	'FLD',
+	'FST',
+	'ITF',
+	'FTI',
 	'JMP',
 	'JPZ',
 	'JNZ',

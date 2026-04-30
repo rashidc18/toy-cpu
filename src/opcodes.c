@@ -5,6 +5,7 @@
 #include "cpu.h"
 #include "fetch.h"
 #include "call_stack.h"
+#include "bytes.h"
 
 const char* opcodes_as_string[] = {
   [HLT] = "HLT",
@@ -253,9 +254,25 @@ void for_(CPU* cpu, RAM* ram) {
 }
 
 void ild(CPU* cpu, RAM* ram) {
+  int address = fetch_int(cpu, ram);
+  stack_push_int(cpu, ram, b2i(
+    ram->data[address],
+    ram->data[address+1],
+    ram->data[address+2],
+    ram->data[address+3]
+  ));
 }
 
 void ist(CPU* cpu, RAM* ram) {
+  int address = fetch_int(cpu, ram);
+  int value = stack_pop_int(cpu, ram);
+
+  uint8_t byte1, byte2, byte3, byte4;
+  i2b(value, &byte1, &byte2, &byte3, &byte4);
+  ram->data[address]   = byte1;
+  ram->data[address+1] = byte2;
+  ram->data[address+2] = byte3;
+  ram->data[address+3] = byte4;
 }
 
 void fld(CPU* cpu, RAM* ram) {

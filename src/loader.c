@@ -17,7 +17,7 @@ void load_ram_from_file(RAM* ram, char* file) {
   int byte;
 
   while ((byte = fgetc(fp)) != EOF) {
-    if (position == RAM_SIZE) {
+    if (position > CODE_END) {
       fclose(fp);
       error(MEMORY_OVERFLOW_ERROR);
     }
