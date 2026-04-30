@@ -1,5 +1,4 @@
 #include <stdint.h>
-#include <stdio.h>
 
 #include "stack.h"
 #include "cpu.h"
@@ -23,6 +22,6 @@ int call_stack_pop(CPU* cpu, RAM* ram) {
   byte3 = ram->data[++cpu->csp];
   byte2 = ram->data[++cpu->csp];
   byte1 = ram->data[++cpu->csp];
-  
+
   return b2i(byte1, byte2, byte3, byte4);
 }
