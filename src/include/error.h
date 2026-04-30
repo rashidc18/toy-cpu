@@ -9,6 +9,9 @@
 #define STACK_OVERFLOW_ERROR "stack overflow"
 #define STACK_UNDERFLOW_ERROR "stack underflow"
 
+#define CALL_STACK_OVERFLOW_ERROR "call stack overflow"
+#define CALL_STACK_UNDERFLOW_ERROR "call stack underflow"
+
 #define UNKNOWN_INSTRUCTION_ERROR "unknown instruction `%d`"
 #define UNKNOWN_SYSCALL_CODE_ERROR "unknown syscall code `%d`"
 
